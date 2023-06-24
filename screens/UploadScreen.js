@@ -8,7 +8,12 @@ import {
   Animated,
   Keyboard,
   useWindowDimensions,
+  Platform,
 } from 'react-native';
+import storage from '@react-native-firebase/storage';
+import {useUserContext} from '../contexts/UserContext';
+import {v4} from 'uuid';
+import {createPost} from '../lib/posts';
 
 function UploadScreen() {
   const route = useRoute();
@@ -25,9 +30,28 @@ function UploadScreen() {
   const [description, setDescription] = useState('');
 
   const navigation = useNavigation();
-  const onSubmit = useCallback(() => {
-    // TODO: 포스트 작성 로직 구현
-  }, []);
+
+  // UserContext에서 값을 받아옴
+  const {user} = useUserContext();
+
+  // 뒤로 가기 후 포스트 작성
+  const onSubmit = useCallback(async () => {
+    navigation.pop();
+    const asset = res.assets[0];
+
+    const extension = asset.fileName.split('.').pop();
+    const reference = storage().ref(`/photo/${user.id}/${v4()}.${extension}`);
+    if (Platform.OS === 'android') {
+      await reference.putString(asset.base64, 'base64', {
+        contentType: asset.type,
+      });
+    } else {
+      await reference.putFile(asset.uri);
+    }
+    const photoURL = await reference.getDownloadURL();
+    await createPost({description, photoURL, user});
+    // TODO: 포스트 목록 새로고침
+  }, [res, user, description, navigation]);
 
   // 이벤트 등록 후 해제
   useEffect(() => {
