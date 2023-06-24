@@ -1,29 +1,34 @@
 import React, {useMemo} from 'react';
 import {View, StyleSheet, Text, Image, Pressable} from 'react-native';
+import Avatar from './Avatar';
+import {useNavigation, useNavigationState} from '@react-navigation/native';
 
 function PostCard({user, photoURL, description, createdAt, id}) {
+  const routeNames = useNavigationState(state => state.routeNames);
+  console.log(routeNames);
   const date = useMemo(
     () => (createdAt ? new Date(createdAt._seconds * 1000) : new Date()),
     [createdAt],
   );
 
-  const onOpenProfile = () => {
-    // TODO: 사용자 프로필 화면 열기
-  };
+  const navigation = useNavigation();
 
+  const onOpenProfile = () => {
+    // MyProfile이 존재하는지 확인
+    if (routeNames.find(routeName => routeName === 'MyProfile')) {
+      navigation.navigate('MyProfile');
+    } else {
+      navigation.navigate('Profile', {
+        userId: user.id,
+        displayName: user.displayName,
+      });
+    }
+  };
   return (
     <View style={styles.block}>
       <View style={[styles.head, styles.paddingBlock]}>
         <Pressable style={styles.profile} onPress={onOpenProfile}>
-          <Image
-            source={
-              user.photoURL
-                ? {uri: user.photoURL}
-                : require('../assets/user.png')
-            }
-            resizeMode="cover"
-            style={styles.avatar}
-          />
+          <Avatar source={user.photoURL && {uri: user.photoURL}} />
           <Text style={styles.displayName}>{user.displayName}</Text>
         </Pressable>
       </View>

@@ -18,6 +18,7 @@ import {createUser} from '../lib/users';
 import BorderedInput from './BorderedInput';
 import CustomButton from './CustomButton';
 import {useUserContext} from '../contexts/UserContext';
+import Avatar from './Avatar';
 
 function SetupProfile() {
   const [displayName, setDisplayName] = useState('');
@@ -86,18 +87,10 @@ function SetupProfile() {
       },
     );
   };
-
   return (
     <View style={styles.block}>
       <Pressable onPress={onSelectImage}>
-        <Image
-          style={styles.circle}
-          source={
-            response
-              ? {uri: response?.assets[0]?.uri}
-              : require('../assets/user.png')
-          }
-        />
+        <Avatar source={response && {uri: response.uri}} size={128} />
       </Pressable>
       <View style={styles.form}>
         <BorderedInput
