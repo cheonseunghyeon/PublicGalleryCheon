@@ -8,9 +8,18 @@ import {
 import PostCard from '../components/PostCard';
 import {getNewerPosts, getOlderPosts, getPosts, PAGE_SIZE} from '../lib/posts';
 import usePosts from '../hooks/usePosts';
+import events from '../lib/events';
 
 function FeedScreen() {
   const {posts, noMorePost, refreshing, onLoadMore, onRefresh} = usePosts();
+
+  useEffect(() => {
+    events.addListener('refresh', onRefresh);
+    return () => {
+      events.removeListener('refresh', onRefresh);
+    };
+  }, [onRefresh]);
+
   return (
     <FlatList
       data={posts}

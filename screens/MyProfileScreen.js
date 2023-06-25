@@ -4,6 +4,7 @@ import {useEffect} from 'react';
 import PostScreen from './PostScreen';
 import Profile from '../components/Profile';
 import {useUserContext} from '../contexts/UserContext';
+import IconRightButton from '../components/IconRightButton';
 
 function MyProfileScreen() {
   const {user} = useUserContext();
@@ -12,6 +13,12 @@ function MyProfileScreen() {
   useEffect(() => {
     navigation.setOptions({
       title: user.displayName,
+      headerRight: () => (
+        <IconRightButton
+          name="settings"
+          onPress={() => navigation.push('Setting')}
+        />
+      ),
     });
   }, [navigation, user]);
 

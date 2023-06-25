@@ -8,6 +8,7 @@ import {getUser} from '../lib/users';
 import {subscribeAuth} from '../lib/auth';
 import UploadScreen from './UploadScreen';
 import ModifyScreen from './ModifyScreen';
+import SettingScreen from './SettingScreen';
 const Stack = createNativeStackNavigator();
 
 function RootStack() {
@@ -32,7 +33,6 @@ function RootStack() {
 
   return (
     <Stack.Navigator>
-      {/* 유저 존재 여부에 따라 MainTab 호출 */}
       {user ? (
         <>
           <Stack.Screen
@@ -49,6 +49,11 @@ function RootStack() {
             name="Modify"
             component={ModifyScreen}
             options={{title: '설명 수정', headerBackTitle: '뒤로가기'}}
+          />
+          <Stack.Screen
+            name="Setting"
+            component={SettingScreen}
+            options={{title: '설정', headerBackTitle: '뒤로가기'}}
           />
         </>
       ) : (

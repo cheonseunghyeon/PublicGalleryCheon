@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import IconRightButton from '../components/IconRightButton';
 import {updatePost} from '../lib/posts';
+import events from '../lib/events';
 
 function ModifyScreen() {
   const navigation = useNavigation();
@@ -18,6 +19,11 @@ function ModifyScreen() {
   const onSubmit = useCallback(async () => {
     await updatePost({
       id: params.id,
+      description,
+    });
+    // ModifyScreen 에서 포스트 수정 후 updatePost 이벤트 발생 - 포스트 id과 설명을 같이 전송
+    events.emit('updatePost', {
+      postId: params.id,
       description,
     });
     // TODO: 포스트 및 포스트 목록 업데이트
